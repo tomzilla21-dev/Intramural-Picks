@@ -1,9 +1,10 @@
-<!DOCTYPE html>
+!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Intramural Hoops Picks</title>
+    <title>HoopLines - Intramural Betting</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -12,32 +13,74 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Rajdhani', sans-serif;
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #ea580c 100%);
             min-height: 100vh;
             padding: 20px;
+            overflow-x: hidden;
+        }
+
+        @keyframes neon-pulse {
+            0%, 100% { text-shadow: 0 0 10px #fb923c, 0 0 20px #fb923c, 0 0 30px #fb923c; }
+            50% { text-shadow: 0 0 20px #fb923c, 0 0 30px #fb923c, 0 0 40px #fb923c; }
+        }
+
+        @keyframes slide-up {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
-            background: white;
+            background: rgba(15, 23, 42, 0.95);
             border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
             overflow: hidden;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(59, 130, 246, 0.3);
         }
 
         .header {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            background: linear-gradient(135deg, #1e40af 0%, #ea580c 100%);
             color: white;
             padding: 30px;
             text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></svg>');
+            opacity: 0.3;
         }
 
         .header h1 {
-            font-size: 2.5em;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 3.5em;
             margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            text-shadow: 0 0 20px rgba(251, 146, 60, 0.8);
+            position: relative;
+            z-index: 1;
+            animation: neon-pulse 2s ease-in-out infinite;
+        }
+
+        .header .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
         }
 
         .nav {
@@ -46,28 +89,34 @@
             gap: 10px;
             margin-top: 20px;
             flex-wrap: wrap;
+            position: relative;
+            z-index: 1;
         }
 
         .nav button {
-            background: rgba(255,255,255,0.2);
-            border: 2px solid white;
+            background: rgba(255,255,255,0.1);
+            border: 2px solid rgba(255,255,255,0.3);
             color: white;
-            padding: 12px 24px;
+            padding: 12px 28px;
             border-radius: 25px;
             cursor: pointer;
             font-size: 1em;
+            font-weight: 700;
+            font-family: 'Bebas Neue', sans-serif;
+            letter-spacing: 1px;
             transition: all 0.3s;
-            font-weight: 600;
         }
 
         .nav button:hover {
-            background: white;
-            color: #f5576c;
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(251, 146, 60, 0.4);
         }
 
         .nav button.active {
-            background: white;
-            color: #f5576c;
+            background: linear-gradient(135deg, #ea580c 0%, #fb923c 100%);
+            border-color: #fb923c;
+            box-shadow: 0 0 20px rgba(251, 146, 60, 0.6);
         }
 
         .content {
@@ -76,6 +125,7 @@
 
         .section {
             display: none;
+            animation: slide-up 0.6s ease-out;
         }
 
         .section.active {
@@ -88,63 +138,91 @@
         }
 
         .welcome h2 {
-            color: #667eea;
+            color: #3b82f6;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2.5em;
             margin-bottom: 20px;
+            text-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+        }
+
+        .welcome p {
+            color: #94a3b8;
+            font-size: 1.1em;
         }
 
         .user-select {
             margin: 30px 0;
         }
 
-        .user-select select, .user-select input {
-            padding: 12px 20px;
-            font-size: 1.1em;
-            border: 2px solid #667eea;
-            border-radius: 10px;
+        .user-select input {
+            padding: 15px 25px;
+            font-size: 1.2em;
+            border: 2px solid #3b82f6;
+            border-radius: 12px;
             width: 100%;
-            max-width: 300px;
+            max-width: 350px;
             margin: 10px 0;
+            background: rgba(30, 64, 175, 0.2);
+            color: white;
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 600;
+        }
+
+        .user-select input::placeholder {
+            color: #94a3b8;
         }
 
         .balance {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1e40af 0%, #ea580c 100%);
             color: white;
-            padding: 20px;
+            padding: 25px;
             border-radius: 15px;
             text-align: center;
             margin: 20px 0;
-            font-size: 1.3em;
-            font-weight: 600;
+            font-size: 1.5em;
+            font-weight: 700;
+            font-family: 'Bebas Neue', sans-serif;
+            letter-spacing: 2px;
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.3);
         }
 
         .games-list {
             display: grid;
-            gap: 20px;
+            gap: 25px;
         }
 
         .game-card {
-            background: #f8f9fa;
+            background: rgba(30, 41, 59, 0.8);
             border-radius: 15px;
-            padding: 20px;
-            border: 2px solid #e9ecef;
+            padding: 25px;
+            border: 2px solid rgba(59, 130, 246, 0.3);
+            transition: all 0.3s;
+        }
+
+        .game-card:hover {
+            border-color: #ea580c;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(234, 88, 12, 0.3);
         }
 
         .game-header {
-            font-size: 1.2em;
-            color: #667eea;
-            margin-bottom: 15px;
-            font-weight: 600;
+            font-size: 1.5em;
+            color: #fb923c;
+            margin-bottom: 20px;
+            font-weight: 700;
+            font-family: 'Bebas Neue', sans-serif;
+            letter-spacing: 1px;
         }
 
         .props-grid {
             display: grid;
-            gap: 10px;
+            gap: 15px;
         }
 
         .prop-item {
-            background: white;
-            padding: 15px;
-            border-radius: 10px;
+            background: rgba(51, 65, 85, 0.6);
+            padding: 18px;
+            border-radius: 12px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -154,13 +232,15 @@
         }
 
         .prop-item:hover {
-            border-color: #667eea;
-            transform: translateY(-2px);
+            border-color: #3b82f6;
+            background: rgba(59, 130, 246, 0.1);
+            transform: translateX(5px);
         }
 
         .prop-item.selected {
-            border-color: #f5576c;
-            background: #fff5f7;
+            border-color: #ea580c;
+            background: rgba(234, 88, 12, 0.2);
+            box-shadow: 0 0 20px rgba(234, 88, 12, 0.3);
         }
 
         .prop-info {
@@ -168,127 +248,153 @@
         }
 
         .prop-player {
-            font-weight: 600;
-            color: #333;
+            font-weight: 700;
+            color: white;
+            font-size: 1.1em;
         }
 
         .prop-stat {
-            color: #666;
-            font-size: 0.9em;
+            color: #94a3b8;
+            font-size: 0.95em;
+            margin-top: 4px;
         }
 
         .prop-line {
-            font-size: 1.2em;
+            font-size: 1.5em;
             font-weight: 700;
-            color: #667eea;
-            margin: 0 20px;
+            color: #fb923c;
+            margin: 0 25px;
+            font-family: 'Bebas Neue', sans-serif;
         }
 
         .prop-pick {
             display: flex;
-            gap: 10px;
+            gap: 12px;
         }
 
         .pick-btn {
-            padding: 8px 16px;
-            border: 2px solid #667eea;
-            background: white;
-            color: #667eea;
-            border-radius: 8px;
+            padding: 10px 20px;
+            border: 2px solid #3b82f6;
+            background: rgba(30, 64, 175, 0.3);
+            color: white;
+            border-radius: 10px;
             cursor: pointer;
-            font-weight: 600;
+            font-weight: 700;
+            font-family: 'Bebas Neue', sans-serif;
+            letter-spacing: 1px;
             transition: all 0.3s;
+            font-size: 1em;
         }
 
         .pick-btn:hover {
-            background: #667eea;
-            color: white;
+            background: #3b82f6;
+            transform: scale(1.05);
         }
 
         .pick-btn.active {
-            background: #f5576c;
-            border-color: #f5576c;
-            color: white;
+            background: linear-gradient(135deg, #ea580c 0%, #fb923c 100%);
+            border-color: #fb923c;
+            box-shadow: 0 0 20px rgba(251, 146, 60, 0.6);
         }
 
         .parlay-slip {
             position: fixed;
             right: 20px;
             top: 20px;
-            width: 300px;
-            background: white;
+            width: 340px;
+            background: rgba(15, 23, 42, 0.98);
             border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            padding: 20px;
-            max-height: 80vh;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            padding: 25px;
+            max-height: 85vh;
             overflow-y: auto;
+            border: 2px solid rgba(59, 130, 246, 0.3);
+            backdrop-filter: blur(10px);
         }
 
         .parlay-header {
-            font-size: 1.2em;
-            font-weight: 600;
-            color: #667eea;
-            margin-bottom: 15px;
+            font-size: 1.5em;
+            font-weight: 700;
+            color: #fb923c;
+            margin-bottom: 20px;
             text-align: center;
+            font-family: 'Bebas Neue', sans-serif;
+            letter-spacing: 2px;
         }
 
         .parlay-item {
-            background: #f8f9fa;
-            padding: 10px;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            font-size: 0.9em;
+            background: rgba(30, 41, 59, 0.6);
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            font-size: 0.95em;
+            color: #e2e8f0;
+            border: 1px solid rgba(59, 130, 246, 0.2);
         }
 
         .parlay-remove {
             float: right;
-            background: #f5576c;
+            background: #ea580c;
             color: white;
             border: none;
             border-radius: 50%;
-            width: 20px;
-            height: 20px;
+            width: 24px;
+            height: 24px;
             cursor: pointer;
-            font-size: 0.8em;
+            font-size: 0.9em;
+            font-weight: 700;
+            transition: all 0.3s;
+        }
+
+        .parlay-remove:hover {
+            background: #dc2626;
+            transform: scale(1.1);
         }
 
         .wager-input {
             width: 100%;
-            padding: 10px;
-            border: 2px solid #667eea;
-            border-radius: 8px;
-            margin: 10px 0;
-            font-size: 1em;
+            padding: 12px;
+            border: 2px solid #3b82f6;
+            border-radius: 10px;
+            margin: 12px 0;
+            font-size: 1.1em;
+            background: rgba(30, 64, 175, 0.2);
+            color: white;
+            font-weight: 600;
         }
 
         .parlay-odds {
             text-align: center;
-            margin: 10px 0;
-            font-size: 1.1em;
-            color: #333;
+            margin: 12px 0;
+            font-size: 1.2em;
+            color: #94a3b8;
+            font-weight: 600;
         }
 
         .submit-parlay {
             width: 100%;
-            padding: 12px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 14px;
+            background: linear-gradient(135deg, #1e40af 0%, #ea580c 100%);
             color: white;
             border: none;
-            border-radius: 10px;
-            font-size: 1.1em;
-            font-weight: 600;
+            border-radius: 12px;
+            font-size: 1.2em;
+            font-weight: 700;
             cursor: pointer;
             transition: all 0.3s;
+            font-family: 'Bebas Neue', sans-serif;
+            letter-spacing: 1px;
         }
 
         .submit-parlay:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.5);
         }
 
         .submit-parlay:disabled {
-            background: #ccc;
+            background: #475569;
             cursor: not-allowed;
+            opacity: 0.5;
         }
 
         .admin-section {
@@ -296,155 +402,285 @@
         }
 
         .admin-form {
-            background: #f8f9fa;
-            padding: 20px;
+            background: rgba(30, 41, 59, 0.6);
+            padding: 25px;
             border-radius: 15px;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
+            border: 2px solid rgba(59, 130, 246, 0.2);
         }
 
         .admin-form h3 {
-            color: #667eea;
-            margin-bottom: 15px;
+            color: #fb923c;
+            margin-bottom: 20px;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.8em;
+            letter-spacing: 1px;
         }
 
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 18px;
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 5px;
-            font-weight: 600;
-            color: #333;
+            margin-bottom: 8px;
+            font-weight: 700;
+            color: #94a3b8;
+            font-size: 0.9em;
+            letter-spacing: 0.5px;
         }
 
-        .form-group input, .form-group select {
+        .form-group input,
+        .form-group select {
             width: 100%;
-            padding: 10px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
+            padding: 12px 16px;
+            border: 2px solid rgba(59, 130, 246, 0.3);
+            border-radius: 10px;
             font-size: 1em;
+            background: rgba(30, 64, 175, 0.15);
+            color: white;
+            font-weight: 600;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #ea580c;
+            box-shadow: 0 0 15px rgba(234, 88, 12, 0.3);
         }
 
         .btn {
-            padding: 12px 24px;
-            background: #667eea;
+            padding: 12px 28px;
+            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
             color: white;
             border: none;
             border-radius: 10px;
             cursor: pointer;
             font-size: 1em;
-            font-weight: 600;
+            font-weight: 700;
             transition: all 0.3s;
+            font-family: 'Bebas Neue', sans-serif;
+            letter-spacing: 1px;
         }
 
         .btn:hover {
-            background: #764ba2;
+            background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);
             transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4);
         }
 
         .btn-danger {
-            background: #f5576c;
+            background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
         }
 
         .btn-danger:hover {
-            background: #e04050;
+            background: linear-gradient(135deg, #ef4444 0%, #f87171 100%);
         }
 
         .table {
             width: 100%;
             border-collapse: collapse;
             margin: 20px 0;
-            background: white;
-            border-radius: 10px;
+            background: rgba(30, 41, 59, 0.6);
+            border-radius: 12px;
             overflow: hidden;
         }
 
         .table th {
-            background: #667eea;
+            background: linear-gradient(135deg, #1e40af 0%, #ea580c 100%);
             color: white;
-            padding: 12px;
+            padding: 14px;
             text-align: left;
+            font-family: 'Bebas Neue', sans-serif;
+            letter-spacing: 1px;
+            font-size: 1.1em;
         }
 
         .table td {
-            padding: 12px;
-            border-bottom: 1px solid #e9ecef;
+            padding: 14px;
+            border-bottom: 1px solid rgba(59, 130, 246, 0.2);
+            color: #e2e8f0;
         }
 
         .table tr:hover {
-            background: #f8f9fa;
+            background: rgba(59, 130, 246, 0.1);
         }
 
         .history-item {
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 15px;
-            border-left: 4px solid #667eea;
+            background: rgba(30, 41, 59, 0.6);
+            padding: 18px;
+            border-radius: 12px;
+            margin-bottom: 18px;
+            border-left: 4px solid #3b82f6;
         }
 
         .history-item.won {
-            border-left-color: #28a745;
-            background: #f0fdf4;
+            border-left-color: #10b981;
+            background: rgba(16, 185, 129, 0.1);
         }
 
         .history-item.lost {
-            border-left-color: #dc3545;
-            background: #fef2f2;
+            border-left-color: #ef4444;
+            background: rgba(239, 68, 68, 0.1);
         }
 
         .history-item.pending {
-            border-left-color: #ffc107;
-            background: #fffbeb;
+            border-left-color: #fb923c;
+            background: rgba(251, 146, 60, 0.1);
         }
 
         .status-badge {
             display: inline-block;
-            padding: 4px 12px;
-            border-radius: 12px;
+            padding: 5px 14px;
+            border-radius: 15px;
             font-size: 0.85em;
-            font-weight: 600;
+            font-weight: 700;
+            font-family: 'Bebas Neue', sans-serif;
+            letter-spacing: 0.5px;
         }
 
         .status-won {
-            background: #28a745;
+            background: #10b981;
             color: white;
         }
 
         .status-lost {
-            background: #dc3545;
+            background: #ef4444;
             color: white;
         }
 
         .status-pending {
-            background: #ffc107;
-            color: #333;
+            background: #fb923c;
+            color: white;
         }
 
         .loading {
             text-align: center;
-            padding: 40px;
-            color: #667eea;
-            font-size: 1.2em;
+            padding: 50px;
+            color: #3b82f6;
+            font-size: 1.4em;
+            font-family: 'Bebas Neue', sans-serif;
         }
 
         .error {
-            background: #fef2f2;
-            color: #dc3545;
-            padding: 15px;
-            border-radius: 10px;
+            background: rgba(239, 68, 68, 0.2);
+            color: #fca5a5;
+            padding: 18px;
+            border-radius: 12px;
             margin: 20px 0;
-            border-left: 4px solid #dc3545;
+            border-left: 4px solid #ef4444;
         }
 
         .success {
-            background: #f0fdf4;
-            color: #28a745;
-            padding: 15px;
-            border-radius: 10px;
+            background: rgba(16, 185, 129, 0.2);
+            color: #6ee7b7;
+            padding: 18px;
+            border-radius: 12px;
             margin: 20px 0;
-            border-left: 4px solid #28a745;
+            border-left: 4px solid #10b981;
+        }
+
+        .config-section {
+            background: rgba(30, 64, 175, 0.2);
+            border: 2px solid #3b82f6;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .config-section h3 {
+            color: #fb923c;
+            margin-bottom: 20px;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.8em;
+            letter-spacing: 1px;
+        }
+
+        .setup-instructions {
+            background: rgba(251, 146, 60, 0.15);
+            border: 2px solid #fb923c;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .setup-instructions h3 {
+            color: #fb923c;
+            margin-bottom: 18px;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.5em;
+        }
+
+        .setup-instructions ol {
+            margin-left: 25px;
+            color: #e2e8f0;
+        }
+
+        .setup-instructions li {
+            margin: 12px 0;
+            line-height: 1.8;
+        }
+
+        .setup-instructions code {
+            background: rgba(15, 23, 42, 0.6);
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-family: monospace;
+            color: #60a5fa;
+        }
+
+        .leaderboard {
+            background: rgba(30, 41, 59, 0.6);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 2px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .leaderboard-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 25px;
+            border-bottom: 1px solid rgba(59, 130, 246, 0.2);
+            transition: all 0.3s;
+        }
+
+        .leaderboard-item:hover {
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        .leaderboard-item:nth-child(1) {
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.3) 0%, rgba(251, 146, 60, 0.2) 100%);
+        }
+
+        .leaderboard-item:nth-child(2) {
+            background: linear-gradient(135deg, rgba(148, 163, 184, 0.3) 0%, rgba(100, 116, 139, 0.2) 100%);
+        }
+
+        .leaderboard-item:nth-child(3) {
+            background: linear-gradient(135deg, rgba(205, 127, 50, 0.3) 0%, rgba(234, 88, 12, 0.2) 100%);
+        }
+
+        .leaderboard-rank {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: #fb923c;
+            min-width: 50px;
+            font-family: 'Bebas Neue', sans-serif;
+        }
+
+        .leaderboard-name {
+            flex: 1;
+            font-weight: 700;
+            font-size: 1.2em;
+            color: white;
+        }
+
+        .leaderboard-balance {
+            font-size: 1.4em;
+            font-weight: 700;
+            color: #10b981;
+            font-family: 'Bebas Neue', sans-serif;
         }
 
         @media (max-width: 768px) {
@@ -455,111 +691,35 @@
             }
 
             .header h1 {
-                font-size: 1.8em;
+                font-size: 2.2em;
             }
 
             .nav {
-                gap: 5px;
+                gap: 8px;
             }
 
             .nav button {
-                padding: 8px 16px;
+                padding: 10px 18px;
                 font-size: 0.9em;
             }
-        }
 
-        .setup-instructions {
-            background: #fff3cd;
-            border: 2px solid #ffc107;
-            border-radius: 10px;
-            padding: 20px;
-            margin: 20px 0;
-        }
+            .prop-item {
+                flex-direction: column;
+                gap: 12px;
+                text-align: center;
+            }
 
-        .setup-instructions h3 {
-            color: #856404;
-            margin-bottom: 15px;
-        }
-
-        .setup-instructions ol {
-            margin-left: 20px;
-        }
-
-        .setup-instructions li {
-            margin: 10px 0;
-            line-height: 1.6;
-        }
-
-        .setup-instructions code {
-            background: #f8f9fa;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-family: monospace;
-        }
-
-        .config-section {
-            background: #e7f3ff;
-            border: 2px solid #667eea;
-            border-radius: 10px;
-            padding: 20px;
-            margin: 20px 0;
-        }
-
-        .config-section h3 {
-            color: #667eea;
-            margin-bottom: 15px;
-        }
-
-        .leaderboard {
-            background: white;
-            border-radius: 10px;
-            overflow: hidden;
-        }
-
-        .leaderboard-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 20px;
-            border-bottom: 1px solid #e9ecef;
-        }
-
-        .leaderboard-item:nth-child(1) {
-            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
-        }
-
-        .leaderboard-item:nth-child(2) {
-            background: linear-gradient(135deg, #c0c0c0 0%, #e8e8e8 100%);
-        }
-
-        .leaderboard-item:nth-child(3) {
-            background: linear-gradient(135deg, #cd7f32 0%, #e6a85c 100%);
-        }
-
-        .leaderboard-rank {
-            font-size: 1.5em;
-            font-weight: 700;
-            color: #667eea;
-            min-width: 40px;
-        }
-
-        .leaderboard-name {
-            flex: 1;
-            font-weight: 600;
-            font-size: 1.1em;
-        }
-
-        .leaderboard-balance {
-            font-size: 1.2em;
-            font-weight: 700;
-            color: #28a745;
+            .prop-line {
+                margin: 10px 0;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>🏀 Intramural Hoops Picks</h1>
+            <h1>🏀 HOOPLINES</h1>
+            <div class="subtitle">Intramural Basketball Betting</div>
             <div class="nav">
                 <button onclick="showSection('welcome')" class="active">Home</button>
                 <button onclick="showSection('picks')">Make Picks</button>
@@ -573,20 +733,20 @@
             <!-- Welcome Section -->
             <div id="welcome" class="section active">
                 <div class="welcome">
-                    <h2>Welcome to Intramural Hoops Picks!</h2>
-                    <p style="color: #666; margin: 20px 0;">Pick your player over/unders and build parlays to win virtual cash!</p>
+                    <h2>Welcome to HoopLines!</h2>
+                    <p style="color: #94a3b8; margin: 20px 0;">Pick player over/unders and build parlays to win virtual cash! 💰</p>
                     
                     <div class="user-select">
-                        <h3 style="margin-bottom: 15px;">Select Your Username</h3>
+                        <h3 style="margin-bottom: 18px; color: #fb923c; font-family: 'Bebas Neue', sans-serif; font-size: 1.5em;">Select Your Username</h3>
                         <input type="text" id="usernameInput" placeholder="Enter username..." 
                                onkeypress="if(event.key === 'Enter') setUser()">
                         <br>
-                        <button class="btn" onclick="setUser()" style="margin-top: 10px;">Continue</button>
+                        <button class="btn" onclick="setUser()" style="margin-top: 15px;">Continue</button>
                     </div>
 
                     <div id="setupInstructions" class="setup-instructions">
                         <h3>🔧 Setup Required</h3>
-                        <p><strong>This site needs to connect to Google Sheets. Follow these steps:</strong></p>
+                        <p style="color: #e2e8f0; margin-bottom: 15px;"><strong>This site needs to connect to Google Sheets. Follow these steps:</strong></p>
                         <ol>
                             <li>Create a new Google Sheet</li>
                             <li>Go to <strong>Extensions → Apps Script</strong></li>
@@ -623,7 +783,7 @@
 
             <!-- History Section -->
             <div id="history" class="section">
-                <h2 style="color: #667eea; margin-bottom: 20px;">My Betting History</h2>
+                <h2 style="color: #fb923c; margin-bottom: 25px; font-family: 'Bebas Neue', sans-serif; font-size: 2em;">My Betting History</h2>
                 <div id="historyContainer">
                     <div class="loading">Loading history...</div>
                 </div>
@@ -631,7 +791,7 @@
 
             <!-- Leaderboard Section -->
             <div id="leaderboard" class="section">
-                <h2 style="color: #667eea; margin-bottom: 20px;">💰 Leaderboard</h2>
+                <h2 style="color: #fb923c; margin-bottom: 25px; font-family: 'Bebas Neue', sans-serif; font-size: 2em;">💰 Leaderboard</h2>
                 <div id="leaderboardContainer" class="leaderboard">
                     <div class="loading">Loading leaderboard...</div>
                 </div>
@@ -640,13 +800,14 @@
             <!-- Admin Section -->
             <div id="admin" class="section">
                 <div class="admin-section">
-                    <h2 style="color: #667eea; margin-bottom: 20px;">Admin Panel</h2>
+                    <h2 style="color: #fb923c; margin-bottom: 25px; font-family: 'Bebas Neue', sans-serif; font-size: 2em;">Admin Panel</h2>
                     
                     <div id="adminAuth">
                         <div class="admin-form">
                             <h3>Enter Admin Password</h3>
                             <input type="password" id="adminPassInput" placeholder="Password" 
-                                   onkeypress="if(event.key === 'Enter') checkAdminAuth()">
+                                   onkeypress="if(event.key === 'Enter') checkAdminAuth()"
+                                   style="background: rgba(30, 64, 175, 0.2); border: 2px solid #3b82f6; color: white; padding: 12px; border-radius: 10px; width: 100%; margin-bottom: 10px;">
                             <button class="btn" onclick="checkAdminAuth()" style="margin-top: 10px;">Login</button>
                         </div>
                     </div>
@@ -704,8 +865,8 @@
                         <div class="admin-form">
                             <h3>Database Overview</h3>
                             <button class="btn" onclick="viewPlayers()">View Players</button>
-                            <button class="btn" onclick="viewGames()">View Games</button>
-                            <button class="btn" onclick="viewParlays()">View All Parlays</button>
+                            <button class="btn" onclick="viewGames()" style="margin-left: 10px;">View Games</button>
+                            <button class="btn" onclick="viewParlays()" style="margin-left: 10px;">View All Parlays</button>
                             <div id="adminDataView" style="margin-top: 20px;"></div>
                         </div>
                     </div>
@@ -716,7 +877,7 @@
 
     <!-- Parlay Slip (floating) -->
     <div class="parlay-slip" id="parlaySlip" style="display: none;">
-        <div class="parlay-header">Parlay Slip</div>
+        <div class="parlay-header">Parlay Slip 🎯</div>
         <div id="parlayPicks"></div>
         <input type="number" class="wager-input" id="wagerAmount" placeholder="Wager amount" min="1">
         <div class="parlay-odds" id="parlayOdds">Odds: --</div>
@@ -902,6 +1063,9 @@
                     }
                     return gameToUpdate;
                 
+                case 'getAllUsers':
+                    return storage.users;
+                
                 default:
                     return null;
             }
@@ -964,7 +1128,7 @@
             const upcomingGames = allGames.filter(g => g.status === 'upcoming');
 
             if (upcomingGames.length === 0) {
-                container.innerHTML = '<p style="text-align: center; color: #666;">No upcoming games. Check back later!</p>';
+                container.innerHTML = '<p style="text-align: center; color: #94a3b8;">No upcoming games. Check back later! 🏀</p>';
                 return;
             }
 
@@ -1070,7 +1234,7 @@
                     <button class="parlay-remove" onclick="removePick(${idx})">×</button>
                     <strong>${pick.playerName}</strong><br>
                     ${pick.statType} ${pick.pick.toUpperCase()} ${pick.line}<br>
-                    <small>${pick.gameName}</small>
+                    <small style="color: #94a3b8;">${pick.gameName}</small>
                 </div>
             `).join('');
             
@@ -1134,35 +1298,35 @@
             selectedPicks = [];
             updateParlaySlip();
             loadData();
-            showMessage('Parlay placed successfully!', 'success');
+            showMessage('Parlay placed successfully! 🎯', 'success');
         }
 
         function loadHistory() {
             const container = document.getElementById('historyContainer');
             
             if (allParlays.length === 0) {
-                container.innerHTML = '<p style="text-align: center; color: #666;">No betting history yet.</p>';
+                container.innerHTML = '<p style="text-align: center; color: #94a3b8;">No betting history yet. Place your first parlay! 🏀</p>';
                 return;
             }
             
             container.innerHTML = allParlays.map(parlay => `
                 <div class="history-item ${parlay.status}">
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                        <strong>${new Date(parlay.timestamp).toLocaleDateString()}</strong>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+                        <strong style="color: white;">${new Date(parlay.timestamp).toLocaleDateString()}</strong>
                         <span class="status-badge status-${parlay.status}">${parlay.status.toUpperCase()}</span>
                     </div>
-                    <div style="margin-bottom: 10px;">
+                    <div style="margin-bottom: 12px;">
                         ${parlay.picks.map(pick => `
-                            <div style="padding: 5px 0;">
+                            <div style="padding: 6px 0; color: #e2e8f0;">
                                 ${pick.playerName} - ${pick.statType} ${pick.pick.toUpperCase()} ${pick.line}
-                                ${pick.won !== undefined ? (pick.won ? '✓' : '✗') : ''}
+                                ${pick.won !== undefined ? (pick.won ? '<span style="color: #10b981;">✓</span>' : '<span style="color: #ef4444;">✗</span>') : ''}
                             </div>
                         `).join('')}
                     </div>
-                    <div style="display: flex; justify-content: space-between;">
-                        <span>Wagered: $${parlay.wager.toFixed(2)}</span>
-                        <span>Odds: ${parlay.odds.toFixed(1)}x</span>
-                        <span>${parlay.status === 'won' ? 'Won' : 'To Win'}: $${parlay.potentialWin.toFixed(2)}</span>
+                    <div style="display: flex; justify-content: space-between; color: #94a3b8;">
+                        <span>Wagered: <strong style="color: white;">$${parlay.wager.toFixed(2)}</strong></span>
+                        <span>Odds: <strong style="color: #fb923c;">${parlay.odds.toFixed(1)}x</strong></span>
+                        <span>${parlay.status === 'won' ? 'Won' : 'To Win'}: <strong style="color: ${parlay.status === 'won' ? '#10b981' : 'white'};">$${parlay.potentialWin.toFixed(2)}</strong></span>
                     </div>
                 </div>
             `).join('');
@@ -1171,18 +1335,12 @@
         async function loadLeaderboard() {
             const allUsersData = await callSheetAPI('getAllUsers') || [];
             
-            // For localStorage fallback
-            if (allUsersData.length === 0) {
-                const storage = JSON.parse(localStorage.getItem('hoopsData') || '{"users":[]}');
-                allUsersData.push(...storage.users);
-            }
-            
             allUsersData.sort((a, b) => b.balance - a.balance);
             
             const container = document.getElementById('leaderboardContainer');
             
             if (allUsersData.length === 0) {
-                container.innerHTML = '<p style="text-align: center; color: #666; padding: 20px;">No users yet.</p>';
+                container.innerHTML = '<p style="text-align: center; color: #94a3b8; padding: 25px;">No users yet. Be the first to play! 🏀</p>';
                 return;
             }
             
@@ -1234,7 +1392,7 @@
             
             await callSheetAPI('addPlayer', { name });
             document.getElementById('newPlayerName').value = '';
-            showMessage('Player added successfully!', 'success');
+            showMessage('Player added successfully! ✅', 'success');
             loadData();
         }
 
@@ -1250,7 +1408,7 @@
             await callSheetAPI('createGame', { name, date });
             document.getElementById('newGameName').value = '';
             document.getElementById('newGameDate').value = '';
-            showMessage('Game created successfully!', 'success');
+            showMessage('Game created successfully! 🏀', 'success');
             loadData();
             loadAdminData();
         }
@@ -1261,19 +1419,19 @@
             
             const container = document.getElementById('statsFormContainer');
             container.innerHTML = `
-                <h4 style="margin: 20px 0 10px;">Enter Stats for Each Player</h4>
+                <h4 style="margin: 25px 0 15px; color: #fb923c; font-family: 'Bebas Neue', sans-serif; font-size: 1.3em;">Enter Stats for Each Player</h4>
                 ${allPlayers.map(player => `
-                    <div style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 10px;">
-                        <strong>${player.name}</strong>
-                        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 10px;">
-                            <input type="number" id="pts-${player.id}" placeholder="Points" min="0">
-                            <input type="number" id="reb-${player.id}" placeholder="Rebounds" min="0">
-                            <input type="number" id="ast-${player.id}" placeholder="Assists" min="0">
-                            <input type="number" id="stl-${player.id}" placeholder="Steals" min="0">
+                    <div style="background: rgba(51, 65, 85, 0.4); padding: 18px; border-radius: 10px; margin-bottom: 12px; border: 1px solid rgba(59, 130, 246, 0.2);">
+                        <strong style="color: white; font-size: 1.1em;">${player.name}</strong>
+                        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 12px;">
+                            <input type="number" id="pts-${player.id}" placeholder="Points" min="0" style="background: rgba(30, 64, 175, 0.2); border: 2px solid rgba(59, 130, 246, 0.3); color: white; padding: 10px; border-radius: 8px;">
+                            <input type="number" id="reb-${player.id}" placeholder="Rebounds" min="0" style="background: rgba(30, 64, 175, 0.2); border: 2px solid rgba(59, 130, 246, 0.3); color: white; padding: 10px; border-radius: 8px;">
+                            <input type="number" id="ast-${player.id}" placeholder="Assists" min="0" style="background: rgba(30, 64, 175, 0.2); border: 2px solid rgba(59, 130, 246, 0.3); color: white; padding: 10px; border-radius: 8px;">
+                            <input type="number" id="stl-${player.id}" placeholder="Steals" min="0" style="background: rgba(30, 64, 175, 0.2); border: 2px solid rgba(59, 130, 246, 0.3); color: white; padding: 10px; border-radius: 8px;">
                         </div>
                     </div>
                 `).join('')}
-                <button class="btn" onclick="submitStats(${gameId})">Submit Stats</button>
+                <button class="btn" onclick="submitStats(${gameId})" style="margin-top: 15px;">Submit Stats</button>
             `;
         }
 
@@ -1287,7 +1445,7 @@
             }));
             
             await callSheetAPI('updateGameStats', { gameId, stats });
-            showMessage('Stats submitted and parlays graded!', 'success');
+            showMessage('Stats submitted and parlays graded! 🎯', 'success');
             loadData();
             document.getElementById('statsFormContainer').innerHTML = '';
             document.getElementById('statsGameSelect').value = '';
@@ -1302,17 +1460,17 @@
             
             const container = document.getElementById('adjustFormContainer');
             container.innerHTML = `
-                <h4 style="margin: 20px 0 10px;">Adjust Lines</h4>
+                <h4 style="margin: 25px 0 15px; color: #fb923c; font-family: 'Bebas Neue', sans-serif; font-size: 1.3em;">Adjust Lines</h4>
                 ${game.lines.map((line, idx) => {
                     const player = allPlayers.find(p => p.id === line.playerId);
                     return `
-                        <div style="background: white; padding: 10px; border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">
-                            <span>${player?.name} - ${line.statType}</span>
-                            <input type="number" id="line-${idx}" value="${line.line}" step="0.5" style="width: 80px; padding: 5px;">
+                        <div style="background: rgba(51, 65, 85, 0.4); padding: 12px; border-radius: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(59, 130, 246, 0.2);">
+                            <span style="color: white;">${player?.name} - ${line.statType}</span>
+                            <input type="number" id="line-${idx}" value="${line.line}" step="0.5" style="width: 100px; padding: 8px; background: rgba(30, 64, 175, 0.2); border: 2px solid rgba(59, 130, 246, 0.3); color: white; border-radius: 8px;">
                         </div>
                     `;
                 }).join('')}
-                <button class="btn" onclick="submitAdjustedLines(${gameId})">Save Lines</button>
+                <button class="btn" onclick="submitAdjustedLines(${gameId})" style="margin-top: 15px;">Save Lines</button>
             `;
         }
 
@@ -1324,7 +1482,7 @@
             }));
             
             await callSheetAPI('updateLines', { gameId, lines: newLines });
-            showMessage('Lines updated successfully!', 'success');
+            showMessage('Lines updated successfully! ✅', 'success');
             loadData();
             document.getElementById('adjustFormContainer').innerHTML = '';
             document.getElementById('adjustGameSelect').value = '';
@@ -1375,7 +1533,7 @@
                                 <td>${g.id}</td>
                                 <td>${g.name}</td>
                                 <td>${g.date}</td>
-                                <td>${g.status}</td>
+                                <td><span class="status-badge status-${g.status}">${g.status}</span></td>
                                 <td>${g.lines?.length || 0}</td>
                             </tr>
                         `).join('')}
@@ -1421,6 +1579,7 @@
             div.style.top = '20px';
             div.style.right = '20px';
             div.style.zIndex = '10000';
+            div.style.fontWeight = '600';
             document.body.appendChild(div);
             setTimeout(() => div.remove(), 3000);
         }
