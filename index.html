@@ -1,4 +1,4 @@
-!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -741,35 +741,20 @@
                         <input type="text" id="usernameInput" placeholder="Enter username..." 
                                onkeypress="if(event.key === 'Enter') setUser()">
                         <br>
-                        <button class="btn" onclick="setUser()" style="margin-top: 15px;">Continue</button>
+                        <button class="btn" onclick="setUser()" style="margin-top: 15px;">Let's Go! 🏀</button>
                     </div>
 
-                    <div id="setupInstructions" class="setup-instructions">
-                        <h3>🔧 Setup Required</h3>
-                        <p style="color: #e2e8f0; margin-bottom: 15px;"><strong>This site needs to connect to Google Sheets. Follow these steps:</strong></p>
-                        <ol>
-                            <li>Create a new Google Sheet</li>
-                            <li>Go to <strong>Extensions → Apps Script</strong></li>
-                            <li>Delete any code and paste the provided Apps Script code</li>
-                            <li>Click <strong>Deploy → New Deployment → Web App</strong></li>
-                            <li>Set "Who has access" to <strong>Anyone</strong></li>
-                            <li>Copy the web app URL</li>
-                            <li>Paste it below and click Save</li>
-                        </ol>
+                    <div style="margin-top: 50px; padding: 30px; background: rgba(30, 41, 59, 0.6); border-radius: 15px; border: 2px solid rgba(59, 130, 246, 0.3);">
+                        <h3 style="color: #fb923c; font-family: 'Bebas Neue', sans-serif; font-size: 1.6em; margin-bottom: 15px;">How to Play</h3>
+                        <div style="color: #e2e8f0; line-height: 2; text-align: left; max-width: 600px; margin: 0 auto;">
+                            <p style="margin-bottom: 12px;">🎯 <strong>Pick</strong> over/under on player stats</p>
+                            <p style="margin-bottom: 12px;">📊 <strong>Build</strong> parlays with 2+ picks</p>
+                            <p style="margin-bottom: 12px;">💵 <strong>Wager</strong> your virtual cash</p>
+                            <p style="margin-bottom: 12px;">🏆 <strong>Win</strong> and climb the leaderboard!</p>
+                            <p style="margin-top: 20px; color: #fb923c; font-weight: 700;">Everyone starts with $50 - Good luck!</p>
+                        </div>
                     </div>
 
-                    <div class="config-section">
-                        <h3>Configuration</h3>
-                        <div class="form-group">
-                            <label>Google Sheets Web App URL:</label>
-                            <input type="text" id="sheetUrl" placeholder="https://script.google.com/macros/s/...">
-                        </div>
-                        <div class="form-group">
-                            <label>Admin Password:</label>
-                            <input type="password" id="adminPassword" placeholder="Set admin password">
-                        </div>
-                        <button class="btn" onclick="saveConfig()">Save Configuration</button>
-                    </div>
                 </div>
             </div>
 
@@ -903,10 +888,6 @@
 
         // Initialize
         window.onload = function() {
-            if (CONFIG.sheetUrl) {
-                document.getElementById('sheetUrl').value = CONFIG.sheetUrl;
-                document.getElementById('setupInstructions').style.display = 'none';
-            }
             if (currentUser) {
                 document.getElementById('usernameInput').value = currentUser;
                 loadData();
@@ -1166,7 +1147,7 @@
 
         function generateLines(game) {
             const lines = [];
-            const stats = ['Points', 'Rebounds', 'Assists'];
+            const stats = ['Points'];
             
             allPlayers.forEach(player => {
                 stats.forEach(statType => {
@@ -1187,7 +1168,7 @@
         function calculateAverage(player, statType) {
             if (!player.stats || player.stats.length === 0) {
                 // Default values for new players
-                const defaults = { Points: 12.5, Rebounds: 5.5, Assists: 3.5 };
+                const defaults = { Points: 12.5 };
                 return defaults[statType] || 0;
             }
             
@@ -1423,11 +1404,8 @@
                 ${allPlayers.map(player => `
                     <div style="background: rgba(51, 65, 85, 0.4); padding: 18px; border-radius: 10px; margin-bottom: 12px; border: 1px solid rgba(59, 130, 246, 0.2);">
                         <strong style="color: white; font-size: 1.1em;">${player.name}</strong>
-                        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 12px;">
-                            <input type="number" id="pts-${player.id}" placeholder="Points" min="0" style="background: rgba(30, 64, 175, 0.2); border: 2px solid rgba(59, 130, 246, 0.3); color: white; padding: 10px; border-radius: 8px;">
-                            <input type="number" id="reb-${player.id}" placeholder="Rebounds" min="0" style="background: rgba(30, 64, 175, 0.2); border: 2px solid rgba(59, 130, 246, 0.3); color: white; padding: 10px; border-radius: 8px;">
-                            <input type="number" id="ast-${player.id}" placeholder="Assists" min="0" style="background: rgba(30, 64, 175, 0.2); border: 2px solid rgba(59, 130, 246, 0.3); color: white; padding: 10px; border-radius: 8px;">
-                            <input type="number" id="stl-${player.id}" placeholder="Steals" min="0" style="background: rgba(30, 64, 175, 0.2); border: 2px solid rgba(59, 130, 246, 0.3); color: white; padding: 10px; border-radius: 8px;">
+                        <div style="margin-top: 12px;">
+                            <input type="number" id="pts-${player.id}" placeholder="Points" min="0" style="background: rgba(30, 64, 175, 0.2); border: 2px solid rgba(59, 130, 246, 0.3); color: white; padding: 12px; border-radius: 8px; width: 100%; font-size: 1.1em;">
                         </div>
                     </div>
                 `).join('')}
@@ -1438,10 +1416,7 @@
         async function submitStats(gameId) {
             const stats = allPlayers.map(player => ({
                 playerId: player.id,
-                points: parseInt(document.getElementById(`pts-${player.id}`).value) || 0,
-                rebounds: parseInt(document.getElementById(`reb-${player.id}`).value) || 0,
-                assists: parseInt(document.getElementById(`ast-${player.id}`).value) || 0,
-                steals: parseInt(document.getElementById(`stl-${player.id}`).value) || 0
+                points: parseInt(document.getElementById(`pts-${player.id}`).value) || 0
             }));
             
             await callSheetAPI('updateGameStats', { gameId, stats });
@@ -1586,3 +1561,4 @@
     </script>
 </body>
 </html>
+
