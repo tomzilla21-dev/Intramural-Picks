@@ -1,0 +1,1429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intramural Hoops Picks</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .nav {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .nav button {
+            background: rgba(255,255,255,0.2);
+            border: 2px solid white;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .nav button:hover {
+            background: white;
+            color: #f5576c;
+        }
+
+        .nav button.active {
+            background: white;
+            color: #f5576c;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .welcome {
+            text-align: center;
+            padding: 50px 20px;
+        }
+
+        .welcome h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+
+        .user-select {
+            margin: 30px 0;
+        }
+
+        .user-select select, .user-select input {
+            padding: 12px 20px;
+            font-size: 1.1em;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            width: 100%;
+            max-width: 300px;
+            margin: 10px 0;
+        }
+
+        .balance {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            margin: 20px 0;
+            font-size: 1.3em;
+            font-weight: 600;
+        }
+
+        .games-list {
+            display: grid;
+            gap: 20px;
+        }
+
+        .game-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            border: 2px solid #e9ecef;
+        }
+
+        .game-header {
+            font-size: 1.2em;
+            color: #667eea;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .props-grid {
+            display: grid;
+            gap: 10px;
+        }
+
+        .prop-item {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .prop-item:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+        }
+
+        .prop-item.selected {
+            border-color: #f5576c;
+            background: #fff5f7;
+        }
+
+        .prop-info {
+            flex: 1;
+        }
+
+        .prop-player {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .prop-stat {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .prop-line {
+            font-size: 1.2em;
+            font-weight: 700;
+            color: #667eea;
+            margin: 0 20px;
+        }
+
+        .prop-pick {
+            display: flex;
+            gap: 10px;
+        }
+
+        .pick-btn {
+            padding: 8px 16px;
+            border: 2px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .pick-btn:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .pick-btn.active {
+            background: #f5576c;
+            border-color: #f5576c;
+            color: white;
+        }
+
+        .parlay-slip {
+            position: fixed;
+            right: 20px;
+            top: 20px;
+            width: 300px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            padding: 20px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .parlay-header {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .parlay-item {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            font-size: 0.9em;
+        }
+
+        .parlay-remove {
+            float: right;
+            background: #f5576c;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            font-size: 0.8em;
+        }
+
+        .wager-input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-size: 1em;
+        }
+
+        .parlay-odds {
+            text-align: center;
+            margin: 10px 0;
+            font-size: 1.1em;
+            color: #333;
+        }
+
+        .submit-parlay {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .submit-parlay:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .submit-parlay:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .admin-section {
+            padding: 20px;
+        }
+
+        .admin-form {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .admin-form h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: #f5576c;
+        }
+
+        .btn-danger:hover {
+            background: #e04050;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .table th {
+            background: #667eea;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+
+        .table td {
+            padding: 12px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .history-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border-left: 4px solid #667eea;
+        }
+
+        .history-item.won {
+            border-left-color: #28a745;
+            background: #f0fdf4;
+        }
+
+        .history-item.lost {
+            border-left-color: #dc3545;
+            background: #fef2f2;
+        }
+
+        .history-item.pending {
+            border-left-color: #ffc107;
+            background: #fffbeb;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+
+        .status-won {
+            background: #28a745;
+            color: white;
+        }
+
+        .status-lost {
+            background: #dc3545;
+            color: white;
+        }
+
+        .status-pending {
+            background: #ffc107;
+            color: #333;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #667eea;
+            font-size: 1.2em;
+        }
+
+        .error {
+            background: #fef2f2;
+            color: #dc3545;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #dc3545;
+        }
+
+        .success {
+            background: #f0fdf4;
+            color: #28a745;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #28a745;
+        }
+
+        @media (max-width: 768px) {
+            .parlay-slip {
+                position: static;
+                width: 100%;
+                margin-top: 20px;
+            }
+
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .nav {
+                gap: 5px;
+            }
+
+            .nav button {
+                padding: 8px 16px;
+                font-size: 0.9em;
+            }
+        }
+
+        .setup-instructions {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .setup-instructions h3 {
+            color: #856404;
+            margin-bottom: 15px;
+        }
+
+        .setup-instructions ol {
+            margin-left: 20px;
+        }
+
+        .setup-instructions li {
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+
+        .setup-instructions code {
+            background: #f8f9fa;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+
+        .config-section {
+            background: #e7f3ff;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .config-section h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .leaderboard {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .leaderboard-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .leaderboard-item:nth-child(1) {
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+        }
+
+        .leaderboard-item:nth-child(2) {
+            background: linear-gradient(135deg, #c0c0c0 0%, #e8e8e8 100%);
+        }
+
+        .leaderboard-item:nth-child(3) {
+            background: linear-gradient(135deg, #cd7f32 0%, #e6a85c 100%);
+        }
+
+        .leaderboard-rank {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: #667eea;
+            min-width: 40px;
+        }
+
+        .leaderboard-name {
+            flex: 1;
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+
+        .leaderboard-balance {
+            font-size: 1.2em;
+            font-weight: 700;
+            color: #28a745;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏀 Intramural Hoops Picks</h1>
+            <div class="nav">
+                <button onclick="showSection('welcome')" class="active">Home</button>
+                <button onclick="showSection('picks')">Make Picks</button>
+                <button onclick="showSection('history')">My History</button>
+                <button onclick="showSection('leaderboard')">Leaderboard</button>
+                <button onclick="showSection('admin')">Admin</button>
+            </div>
+        </div>
+
+        <div class="content">
+            <!-- Welcome Section -->
+            <div id="welcome" class="section active">
+                <div class="welcome">
+                    <h2>Welcome to Intramural Hoops Picks!</h2>
+                    <p style="color: #666; margin: 20px 0;">Pick your player over/unders and build parlays to win virtual cash!</p>
+                    
+                    <div class="user-select">
+                        <h3 style="margin-bottom: 15px;">Select Your Username</h3>
+                        <input type="text" id="usernameInput" placeholder="Enter username..." 
+                               onkeypress="if(event.key === 'Enter') setUser()">
+                        <br>
+                        <button class="btn" onclick="setUser()" style="margin-top: 10px;">Continue</button>
+                    </div>
+
+                    <div id="setupInstructions" class="setup-instructions">
+                        <h3>🔧 Setup Required</h3>
+                        <p><strong>This site needs to connect to Google Sheets. Follow these steps:</strong></p>
+                        <ol>
+                            <li>Create a new Google Sheet</li>
+                            <li>Go to <strong>Extensions → Apps Script</strong></li>
+                            <li>Delete any code and paste the provided Apps Script code</li>
+                            <li>Click <strong>Deploy → New Deployment → Web App</strong></li>
+                            <li>Set "Who has access" to <strong>Anyone</strong></li>
+                            <li>Copy the web app URL</li>
+                            <li>Paste it below and click Save</li>
+                        </ol>
+                    </div>
+
+                    <div class="config-section">
+                        <h3>Configuration</h3>
+                        <div class="form-group">
+                            <label>Google Sheets Web App URL:</label>
+                            <input type="text" id="sheetUrl" placeholder="https://script.google.com/macros/s/...">
+                        </div>
+                        <div class="form-group">
+                            <label>Admin Password:</label>
+                            <input type="password" id="adminPassword" placeholder="Set admin password">
+                        </div>
+                        <button class="btn" onclick="saveConfig()">Save Configuration</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Picks Section -->
+            <div id="picks" class="section">
+                <div id="userBalance" class="balance">Loading...</div>
+                <div id="gamesContainer">
+                    <div class="loading">Loading games...</div>
+                </div>
+            </div>
+
+            <!-- History Section -->
+            <div id="history" class="section">
+                <h2 style="color: #667eea; margin-bottom: 20px;">My Betting History</h2>
+                <div id="historyContainer">
+                    <div class="loading">Loading history...</div>
+                </div>
+            </div>
+
+            <!-- Leaderboard Section -->
+            <div id="leaderboard" class="section">
+                <h2 style="color: #667eea; margin-bottom: 20px;">💰 Leaderboard</h2>
+                <div id="leaderboardContainer" class="leaderboard">
+                    <div class="loading">Loading leaderboard...</div>
+                </div>
+            </div>
+
+            <!-- Admin Section -->
+            <div id="admin" class="section">
+                <div class="admin-section">
+                    <h2 style="color: #667eea; margin-bottom: 20px;">Admin Panel</h2>
+                    
+                    <div id="adminAuth">
+                        <div class="admin-form">
+                            <h3>Enter Admin Password</h3>
+                            <input type="password" id="adminPassInput" placeholder="Password" 
+                                   onkeypress="if(event.key === 'Enter') checkAdminAuth()">
+                            <button class="btn" onclick="checkAdminAuth()" style="margin-top: 10px;">Login</button>
+                        </div>
+                    </div>
+
+                    <div id="adminContent" style="display: none;">
+                        <!-- Add Player -->
+                        <div class="admin-form">
+                            <h3>Add New Player</h3>
+                            <div class="form-group">
+                                <label>Player Name:</label>
+                                <input type="text" id="newPlayerName">
+                            </div>
+                            <button class="btn" onclick="addPlayer()">Add Player</button>
+                        </div>
+
+                        <!-- Create Game -->
+                        <div class="admin-form">
+                            <h3>Create New Game</h3>
+                            <div class="form-group">
+                                <label>Game Name:</label>
+                                <input type="text" id="newGameName" placeholder="e.g., Championship Final">
+                            </div>
+                            <div class="form-group">
+                                <label>Game Date:</label>
+                                <input type="date" id="newGameDate">
+                            </div>
+                            <button class="btn" onclick="createGame()">Create Game</button>
+                        </div>
+
+                        <!-- Enter Stats -->
+                        <div class="admin-form">
+                            <h3>Enter Game Stats</h3>
+                            <div class="form-group">
+                                <label>Select Game:</label>
+                                <select id="statsGameSelect" onchange="loadStatsForm()">
+                                    <option value="">-- Select Game --</option>
+                                </select>
+                            </div>
+                            <div id="statsFormContainer"></div>
+                        </div>
+
+                        <!-- Manual Line Adjustment -->
+                        <div class="admin-form">
+                            <h3>Adjust Lines</h3>
+                            <div class="form-group">
+                                <label>Select Game:</label>
+                                <select id="adjustGameSelect" onchange="loadAdjustForm()">
+                                    <option value="">-- Select Game --</option>
+                                </select>
+                            </div>
+                            <div id="adjustFormContainer"></div>
+                        </div>
+
+                        <!-- View All Data -->
+                        <div class="admin-form">
+                            <h3>Database Overview</h3>
+                            <button class="btn" onclick="viewPlayers()">View Players</button>
+                            <button class="btn" onclick="viewGames()">View Games</button>
+                            <button class="btn" onclick="viewParlays()">View All Parlays</button>
+                            <div id="adminDataView" style="margin-top: 20px;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Parlay Slip (floating) -->
+    <div class="parlay-slip" id="parlaySlip" style="display: none;">
+        <div class="parlay-header">Parlay Slip</div>
+        <div id="parlayPicks"></div>
+        <input type="number" class="wager-input" id="wagerAmount" placeholder="Wager amount" min="1">
+        <div class="parlay-odds" id="parlayOdds">Odds: --</div>
+        <div class="parlay-odds" id="potentialWin">To Win: $0</div>
+        <button class="submit-parlay" onclick="submitParlay()">Place Parlay</button>
+    </div>
+
+    <script>
+        // Configuration
+        let CONFIG = {
+            sheetUrl: localStorage.getItem('sheetUrl') || '',
+            adminPassword: localStorage.getItem('adminPassword') || 'admin123'
+        };
+
+        // State
+        let currentUser = localStorage.getItem('currentUser') || '';
+        let selectedPicks = [];
+        let allPlayers = [];
+        let allGames = [];
+        let allUsers = [];
+        let allParlays = [];
+        let isAdminAuthed = false;
+
+        // Initialize
+        window.onload = function() {
+            if (CONFIG.sheetUrl) {
+                document.getElementById('sheetUrl').value = CONFIG.sheetUrl;
+                document.getElementById('setupInstructions').style.display = 'none';
+            }
+            if (currentUser) {
+                document.getElementById('usernameInput').value = currentUser;
+                loadData();
+            }
+        };
+
+        function saveConfig() {
+            const url = document.getElementById('sheetUrl').value.trim();
+            const pass = document.getElementById('adminPassword').value.trim();
+            
+            if (!url) {
+                alert('Please enter the Google Sheets URL');
+                return;
+            }
+
+            CONFIG.sheetUrl = url;
+            CONFIG.adminPassword = pass || 'admin123';
+            
+            localStorage.setItem('sheetUrl', CONFIG.sheetUrl);
+            localStorage.setItem('adminPassword', CONFIG.adminPassword);
+            
+            document.getElementById('setupInstructions').style.display = 'none';
+            showMessage('Configuration saved!', 'success');
+        }
+
+        function setUser() {
+            const username = document.getElementById('usernameInput').value.trim();
+            if (!username) {
+                alert('Please enter a username');
+                return;
+            }
+            
+            currentUser = username;
+            localStorage.setItem('currentUser', currentUser);
+            loadData();
+            showSection('picks');
+        }
+
+        // Google Sheets API calls
+        async function callSheetAPI(action, data = {}) {
+            if (!CONFIG.sheetUrl) {
+                showMessage('Please configure Google Sheets URL first', 'error');
+                return null;
+            }
+
+            try {
+                const response = await fetch(CONFIG.sheetUrl, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ action, ...data })
+                });
+
+                // Note: Due to no-cors, we can't read the response
+                // For now, we'll use localStorage as fallback
+                return await handleWithLocalStorage(action, data);
+            } catch (error) {
+                console.error('Sheet API Error:', error);
+                return await handleWithLocalStorage(action, data);
+            }
+        }
+
+        // LocalStorage fallback for development
+        function handleWithLocalStorage(action, data) {
+            let storage = JSON.parse(localStorage.getItem('hoopsData') || '{"players":[],"games":[],"users":[],"parlays":[]}');
+            
+            switch(action) {
+                case 'getPlayers':
+                    return storage.players;
+                
+                case 'addPlayer':
+                    storage.players.push({ id: Date.now(), name: data.name, stats: [] });
+                    localStorage.setItem('hoopsData', JSON.stringify(storage));
+                    return storage.players;
+                
+                case 'getGames':
+                    return storage.games;
+                
+                case 'createGame':
+                    const newGame = {
+                        id: Date.now(),
+                        name: data.name,
+                        date: data.date,
+                        status: 'upcoming',
+                        lines: []
+                    };
+                    storage.games.push(newGame);
+                    localStorage.setItem('hoopsData', JSON.stringify(storage));
+                    return newGame;
+                
+                case 'getUser':
+                    let user = storage.users.find(u => u.username === data.username);
+                    if (!user) {
+                        user = { username: data.username, balance: 50 };
+                        storage.users.push(user);
+                        localStorage.setItem('hoopsData', JSON.stringify(storage));
+                    }
+                    return user;
+                
+                case 'updateUser':
+                    const userIndex = storage.users.findIndex(u => u.username === data.username);
+                    if (userIndex >= 0) {
+                        storage.users[userIndex] = { ...storage.users[userIndex], ...data };
+                    }
+                    localStorage.setItem('hoopsData', JSON.stringify(storage));
+                    return storage.users[userIndex];
+                
+                case 'submitParlay':
+                    const parlay = {
+                        id: Date.now(),
+                        username: data.username,
+                        picks: data.picks,
+                        wager: data.wager,
+                        odds: data.odds,
+                        potentialWin: data.potentialWin,
+                        status: 'pending',
+                        gameId: data.gameId,
+                        timestamp: new Date().toISOString()
+                    };
+                    storage.parlays.push(parlay);
+                    localStorage.setItem('hoopsData', JSON.stringify(storage));
+                    return parlay;
+                
+                case 'getParlays':
+                    return storage.parlays.filter(p => !data.username || p.username === data.username);
+                
+                case 'updateGameStats':
+                    const game = storage.games.find(g => g.id === data.gameId);
+                    if (game) {
+                        game.stats = data.stats;
+                        game.status = 'completed';
+                        localStorage.setItem('hoopsData', JSON.stringify(storage));
+                        
+                        // Update player stats
+                        data.stats.forEach(stat => {
+                            const player = storage.players.find(p => p.id === stat.playerId);
+                            if (player) {
+                                player.stats.push(stat);
+                            }
+                        });
+                        
+                        // Grade parlays
+                        gradeParlays(game.id, storage);
+                    }
+                    return game;
+                
+                case 'updateLines':
+                    const gameToUpdate = storage.games.find(g => g.id === data.gameId);
+                    if (gameToUpdate) {
+                        gameToUpdate.lines = data.lines;
+                        localStorage.setItem('hoopsData', JSON.stringify(storage));
+                    }
+                    return gameToUpdate;
+                
+                default:
+                    return null;
+            }
+        }
+
+        function gradeParlays(gameId, storage) {
+            const game = storage.games.find(g => g.id === gameId);
+            if (!game || !game.stats) return;
+
+            storage.parlays.filter(p => p.gameId === gameId && p.status === 'pending').forEach(parlay => {
+                let allWon = true;
+                
+                parlay.picks.forEach(pick => {
+                    const stat = game.stats.find(s => s.playerId === pick.playerId);
+                    if (!stat) return;
+                    
+                    const actual = stat[pick.statType.toLowerCase()];
+                    if (pick.pick === 'over') {
+                        pick.won = actual > pick.line;
+                    } else {
+                        pick.won = actual < pick.line;
+                    }
+                    
+                    if (!pick.won) allWon = false;
+                });
+                
+                parlay.status = allWon ? 'won' : 'lost';
+                
+                if (allWon) {
+                    const user = storage.users.find(u => u.username === parlay.username);
+                    if (user) {
+                        user.balance += parlay.potentialWin;
+                    }
+                }
+            });
+            
+            localStorage.setItem('hoopsData', JSON.stringify(storage));
+        }
+
+        async function loadData() {
+            if (!currentUser || !CONFIG.sheetUrl) return;
+
+            allPlayers = await callSheetAPI('getPlayers') || [];
+            allGames = await callSheetAPI('getGames') || [];
+            const userData = await callSheetAPI('getUser', { username: currentUser }) || { balance: 50 };
+            allParlays = await callSheetAPI('getParlays', { username: currentUser }) || [];
+
+            updateBalance(userData.balance);
+            loadGames();
+            loadHistory();
+            loadLeaderboard();
+        }
+
+        function updateBalance(balance) {
+            document.getElementById('userBalance').innerHTML = `💰 Balance: $${balance.toFixed(2)}`;
+        }
+
+        function loadGames() {
+            const container = document.getElementById('gamesContainer');
+            const upcomingGames = allGames.filter(g => g.status === 'upcoming');
+
+            if (upcomingGames.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #666;">No upcoming games. Check back later!</p>';
+                return;
+            }
+
+            container.innerHTML = upcomingGames.map(game => {
+                // Generate lines if not set
+                if (!game.lines || game.lines.length === 0) {
+                    game.lines = generateLines(game);
+                }
+
+                return `
+                    <div class="game-card">
+                        <div class="game-header">${game.name} - ${game.date}</div>
+                        <div class="props-grid">
+                            ${game.lines.map((line, idx) => {
+                                const player = allPlayers.find(p => p.id === line.playerId);
+                                return `
+                                    <div class="prop-item" id="prop-${game.id}-${idx}">
+                                        <div class="prop-info">
+                                            <div class="prop-player">${player?.name || 'Unknown'}</div>
+                                            <div class="prop-stat">${line.statType}</div>
+                                        </div>
+                                        <div class="prop-line">${line.line}</div>
+                                        <div class="prop-pick">
+                                            <button class="pick-btn" onclick="selectPick(${game.id}, ${line.playerId}, '${line.statType}', ${line.line}, 'over', '${player?.name}', '${game.name}')">OVER</button>
+                                            <button class="pick-btn" onclick="selectPick(${game.id}, ${line.playerId}, '${line.statType}', ${line.line}, 'under', '${player?.name}', '${game.name}')">UNDER</button>
+                                        </div>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function generateLines(game) {
+            const lines = [];
+            const stats = ['Points', 'Rebounds', 'Assists'];
+            
+            allPlayers.forEach(player => {
+                stats.forEach(statType => {
+                    const avg = calculateAverage(player, statType);
+                    if (avg > 0) {
+                        lines.push({
+                            playerId: player.id,
+                            statType: statType,
+                            line: Math.round(avg * 10) / 10
+                        });
+                    }
+                });
+            });
+            
+            return lines;
+        }
+
+        function calculateAverage(player, statType) {
+            if (!player.stats || player.stats.length === 0) {
+                // Default values for new players
+                const defaults = { Points: 12.5, Rebounds: 5.5, Assists: 3.5 };
+                return defaults[statType] || 0;
+            }
+            
+            const statKey = statType.toLowerCase();
+            const values = player.stats.map(s => s[statKey] || 0);
+            const sum = values.reduce((a, b) => a + b, 0);
+            return values.length > 0 ? sum / values.length : 0;
+        }
+
+        function selectPick(gameId, playerId, statType, line, pick, playerName, gameName) {
+            const pickObj = { gameId, playerId, statType, line, pick, playerName, gameName };
+            
+            // Remove if already selected
+            const existingIndex = selectedPicks.findIndex(p => 
+                p.gameId === gameId && p.playerId === playerId && p.statType === statType
+            );
+            
+            if (existingIndex >= 0) {
+                if (selectedPicks[existingIndex].pick === pick) {
+                    selectedPicks.splice(existingIndex, 1);
+                } else {
+                    selectedPicks[existingIndex] = pickObj;
+                }
+            } else {
+                selectedPicks.push(pickObj);
+            }
+            
+            updateParlaySlip();
+        }
+
+        function updateParlaySlip() {
+            const slip = document.getElementById('parlaySlip');
+            const picksDiv = document.getElementById('parlayPicks');
+            
+            if (selectedPicks.length === 0) {
+                slip.style.display = 'none';
+                return;
+            }
+            
+            slip.style.display = 'block';
+            
+            picksDiv.innerHTML = selectedPicks.map((pick, idx) => `
+                <div class="parlay-item">
+                    <button class="parlay-remove" onclick="removePick(${idx})">×</button>
+                    <strong>${pick.playerName}</strong><br>
+                    ${pick.statType} ${pick.pick.toUpperCase()} ${pick.line}<br>
+                    <small>${pick.gameName}</small>
+                </div>
+            `).join('');
+            
+            updateOdds();
+        }
+
+        function removePick(index) {
+            selectedPicks.splice(index, 1);
+            updateParlaySlip();
+        }
+
+        function updateOdds() {
+            const numLegs = selectedPicks.length;
+            const odds = Math.pow(2, numLegs);
+            const wager = parseFloat(document.getElementById('wagerAmount').value) || 0;
+            const potentialWin = wager * odds;
+            
+            document.getElementById('parlayOdds').textContent = `Odds: ${odds.toFixed(1)}x`;
+            document.getElementById('potentialWin').textContent = `To Win: $${potentialWin.toFixed(2)}`;
+        }
+
+        document.getElementById('wagerAmount')?.addEventListener('input', updateOdds);
+
+        async function submitParlay() {
+            if (selectedPicks.length < 2) {
+                alert('You need at least 2 picks for a parlay!');
+                return;
+            }
+            
+            const wager = parseFloat(document.getElementById('wagerAmount').value);
+            if (!wager || wager <= 0) {
+                alert('Please enter a valid wager amount!');
+                return;
+            }
+            
+            const userData = await callSheetAPI('getUser', { username: currentUser });
+            if (wager > userData.balance) {
+                alert('Insufficient balance!');
+                return;
+            }
+            
+            const odds = Math.pow(2, selectedPicks.length);
+            const potentialWin = wager * odds;
+            
+            // Deduct wager
+            await callSheetAPI('updateUser', {
+                username: currentUser,
+                balance: userData.balance - wager
+            });
+            
+            // Submit parlay
+            await callSheetAPI('submitParlay', {
+                username: currentUser,
+                picks: selectedPicks,
+                wager: wager,
+                odds: odds,
+                potentialWin: potentialWin,
+                gameId: selectedPicks[0].gameId
+            });
+            
+            selectedPicks = [];
+            updateParlaySlip();
+            loadData();
+            showMessage('Parlay placed successfully!', 'success');
+        }
+
+        function loadHistory() {
+            const container = document.getElementById('historyContainer');
+            
+            if (allParlays.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #666;">No betting history yet.</p>';
+                return;
+            }
+            
+            container.innerHTML = allParlays.map(parlay => `
+                <div class="history-item ${parlay.status}">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                        <strong>${new Date(parlay.timestamp).toLocaleDateString()}</strong>
+                        <span class="status-badge status-${parlay.status}">${parlay.status.toUpperCase()}</span>
+                    </div>
+                    <div style="margin-bottom: 10px;">
+                        ${parlay.picks.map(pick => `
+                            <div style="padding: 5px 0;">
+                                ${pick.playerName} - ${pick.statType} ${pick.pick.toUpperCase()} ${pick.line}
+                                ${pick.won !== undefined ? (pick.won ? '✓' : '✗') : ''}
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <span>Wagered: $${parlay.wager.toFixed(2)}</span>
+                        <span>Odds: ${parlay.odds.toFixed(1)}x</span>
+                        <span>${parlay.status === 'won' ? 'Won' : 'To Win'}: $${parlay.potentialWin.toFixed(2)}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function loadLeaderboard() {
+            const allUsersData = await callSheetAPI('getAllUsers') || [];
+            
+            // For localStorage fallback
+            if (allUsersData.length === 0) {
+                const storage = JSON.parse(localStorage.getItem('hoopsData') || '{"users":[]}');
+                allUsersData.push(...storage.users);
+            }
+            
+            allUsersData.sort((a, b) => b.balance - a.balance);
+            
+            const container = document.getElementById('leaderboardContainer');
+            
+            if (allUsersData.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #666; padding: 20px;">No users yet.</p>';
+                return;
+            }
+            
+            container.innerHTML = allUsersData.map((user, idx) => `
+                <div class="leaderboard-item">
+                    <div class="leaderboard-rank">#${idx + 1}</div>
+                    <div class="leaderboard-name">${user.username}</div>
+                    <div class="leaderboard-balance">$${user.balance.toFixed(2)}</div>
+                </div>
+            `).join('');
+        }
+
+        function showSection(section) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
+            
+            document.getElementById(section).classList.add('active');
+            event.target.classList.add('active');
+            
+            if (section === 'leaderboard') loadLeaderboard();
+        }
+
+        function checkAdminAuth() {
+            const pass = document.getElementById('adminPassInput').value;
+            if (pass === CONFIG.adminPassword) {
+                isAdminAuthed = true;
+                document.getElementById('adminAuth').style.display = 'none';
+                document.getElementById('adminContent').style.display = 'block';
+                loadAdminData();
+            } else {
+                alert('Incorrect password!');
+            }
+        }
+
+        async function loadAdminData() {
+            // Load game selects
+            const games = await callSheetAPI('getGames') || [];
+            const gameOptions = games.map(g => `<option value="${g.id}">${g.name} - ${g.date}</option>`).join('');
+            document.getElementById('statsGameSelect').innerHTML = '<option value="">-- Select Game --</option>' + gameOptions;
+            document.getElementById('adjustGameSelect').innerHTML = '<option value="">-- Select Game --</option>' + gameOptions;
+        }
+
+        async function addPlayer() {
+            const name = document.getElementById('newPlayerName').value.trim();
+            if (!name) {
+                alert('Please enter player name');
+                return;
+            }
+            
+            await callSheetAPI('addPlayer', { name });
+            document.getElementById('newPlayerName').value = '';
+            showMessage('Player added successfully!', 'success');
+            loadData();
+        }
+
+        async function createGame() {
+            const name = document.getElementById('newGameName').value.trim();
+            const date = document.getElementById('newGameDate').value;
+            
+            if (!name || !date) {
+                alert('Please fill in all fields');
+                return;
+            }
+            
+            await callSheetAPI('createGame', { name, date });
+            document.getElementById('newGameName').value = '';
+            document.getElementById('newGameDate').value = '';
+            showMessage('Game created successfully!', 'success');
+            loadData();
+            loadAdminData();
+        }
+
+        function loadStatsForm() {
+            const gameId = parseInt(document.getElementById('statsGameSelect').value);
+            if (!gameId) return;
+            
+            const container = document.getElementById('statsFormContainer');
+            container.innerHTML = `
+                <h4 style="margin: 20px 0 10px;">Enter Stats for Each Player</h4>
+                ${allPlayers.map(player => `
+                    <div style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 10px;">
+                        <strong>${player.name}</strong>
+                        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 10px;">
+                            <input type="number" id="pts-${player.id}" placeholder="Points" min="0">
+                            <input type="number" id="reb-${player.id}" placeholder="Rebounds" min="0">
+                            <input type="number" id="ast-${player.id}" placeholder="Assists" min="0">
+                            <input type="number" id="stl-${player.id}" placeholder="Steals" min="0">
+                        </div>
+                    </div>
+                `).join('')}
+                <button class="btn" onclick="submitStats(${gameId})">Submit Stats</button>
+            `;
+        }
+
+        async function submitStats(gameId) {
+            const stats = allPlayers.map(player => ({
+                playerId: player.id,
+                points: parseInt(document.getElementById(`pts-${player.id}`).value) || 0,
+                rebounds: parseInt(document.getElementById(`reb-${player.id}`).value) || 0,
+                assists: parseInt(document.getElementById(`ast-${player.id}`).value) || 0,
+                steals: parseInt(document.getElementById(`stl-${player.id}`).value) || 0
+            }));
+            
+            await callSheetAPI('updateGameStats', { gameId, stats });
+            showMessage('Stats submitted and parlays graded!', 'success');
+            loadData();
+            document.getElementById('statsFormContainer').innerHTML = '';
+            document.getElementById('statsGameSelect').value = '';
+        }
+
+        function loadAdjustForm() {
+            const gameId = parseInt(document.getElementById('adjustGameSelect').value);
+            if (!gameId) return;
+            
+            const game = allGames.find(g => g.id === gameId);
+            if (!game || !game.lines) return;
+            
+            const container = document.getElementById('adjustFormContainer');
+            container.innerHTML = `
+                <h4 style="margin: 20px 0 10px;">Adjust Lines</h4>
+                ${game.lines.map((line, idx) => {
+                    const player = allPlayers.find(p => p.id === line.playerId);
+                    return `
+                        <div style="background: white; padding: 10px; border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">
+                            <span>${player?.name} - ${line.statType}</span>
+                            <input type="number" id="line-${idx}" value="${line.line}" step="0.5" style="width: 80px; padding: 5px;">
+                        </div>
+                    `;
+                }).join('')}
+                <button class="btn" onclick="submitAdjustedLines(${gameId})">Save Lines</button>
+            `;
+        }
+
+        async function submitAdjustedLines(gameId) {
+            const game = allGames.find(g => g.id === gameId);
+            const newLines = game.lines.map((line, idx) => ({
+                ...line,
+                line: parseFloat(document.getElementById(`line-${idx}`).value)
+            }));
+            
+            await callSheetAPI('updateLines', { gameId, lines: newLines });
+            showMessage('Lines updated successfully!', 'success');
+            loadData();
+            document.getElementById('adjustFormContainer').innerHTML = '';
+            document.getElementById('adjustGameSelect').value = '';
+        }
+
+        async function viewPlayers() {
+            const players = await callSheetAPI('getPlayers') || [];
+            const container = document.getElementById('adminDataView');
+            container.innerHTML = `
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Games Played</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${players.map(p => `
+                            <tr>
+                                <td>${p.id}</td>
+                                <td>${p.name}</td>
+                                <td>${p.stats?.length || 0}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        async function viewGames() {
+            const games = await callSheetAPI('getGames') || [];
+            const container = document.getElementById('adminDataView');
+            container.innerHTML = `
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Lines</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${games.map(g => `
+                            <tr>
+                                <td>${g.id}</td>
+                                <td>${g.name}</td>
+                                <td>${g.date}</td>
+                                <td>${g.status}</td>
+                                <td>${g.lines?.length || 0}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        async function viewParlays() {
+            const parlays = await callSheetAPI('getParlays') || [];
+            const container = document.getElementById('adminDataView');
+            container.innerHTML = `
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>Picks</th>
+                            <th>Wager</th>
+                            <th>Potential Win</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${parlays.map(p => `
+                            <tr>
+                                <td>${p.username}</td>
+                                <td>${p.picks.length} legs</td>
+                                <td>$${p.wager.toFixed(2)}</td>
+                                <td>$${p.potentialWin.toFixed(2)}</td>
+                                <td><span class="status-badge status-${p.status}">${p.status}</span></td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        function showMessage(msg, type) {
+            const div = document.createElement('div');
+            div.className = type;
+            div.textContent = msg;
+            div.style.position = 'fixed';
+            div.style.top = '20px';
+            div.style.right = '20px';
+            div.style.zIndex = '10000';
+            document.body.appendChild(div);
+            setTimeout(() => div.remove(), 3000);
+        }
+    </script>
+</body>
+</html>
