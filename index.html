@@ -1152,30 +1152,52 @@
             allPlayers.forEach(player => {
                 stats.forEach(statType => {
                     const avg = calculateAverage(player, statType);
-                    if (avg > 0) {
-                        lines.push({
-                            playerId: player.id,
-                            statType: statType,
-                            line: Math.round(avg * 10) / 10
-                        });
-                    }
+                    // Show all players, even if they have no stats (default 0.5)
+                    lines.push({
+                        playerId: player.id,
+                        statType: statType,
+                        line: roundToHalf(avg)
+                    });
                 });
             });
             
             return lines;
         }
 
+        function roundToHalf(num) {
+            // Round to nearest 0.5 (like real sportsbooks)
+            return Math.round(num * 2) / 2;
+        }
+
         function calculateAverage(player, statType) {
             if (!player.stats || player.stats.length === 0) {
-                // Default values for new players
-                const defaults = { Points: 12.5 };
-                return defaults[statType] || 0;
+                // Default for new players with no history
+                return 0.5;
             }
             
             const statKey = statType.toLowerCase();
-            const values = player.stats.map(s => s[statKey] || 0);
-            const sum = values.reduce((a, b) => a + b, 0);
-            return values.length > 0 ? sum / values.length : 0;
+            const recentGames = player.stats.slice(-5); // Last 5 games max
+            
+            if (recentGames.length === 0) {
+                return 0.5;
+            }
+            
+            // Weight recent games more heavily
+            let weightedSum = 0;
+            let weightSum = 0;
+            
+            recentGames.forEach((stat, index) => {
+                const value = stat[statKey] || 0;
+                // More recent games get higher weight (last game = highest weight)
+                const weight = index + 1;
+                weightedSum += value * weight;
+                weightSum += weight;
+            });
+            
+            const weightedAvg = weightSum > 0 ? weightedSum / weightSum : 0.5;
+            
+            // If they have no points in any game, return 0.5
+            return weightedAvg > 0 ? weightedAvg : 0.5;
         }
 
         function selectPick(gameId, playerId, statType, line, pick, playerName, gameName) {
@@ -1561,4 +1583,3 @@
     </script>
 </body>
 </html>
-
