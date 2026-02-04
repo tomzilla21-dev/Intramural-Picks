@@ -956,31 +956,28 @@
             showSection('picks');
         }
 
-        // Google Sheets API calls
         async function callSheetAPI(action, data = {}) {
-            if (!CONFIG.sheetUrl) {
-                showMessage('Please configure Google Sheets URL first', 'error');
-                return null;
-            }
+    if (!CONFIG.sheetUrl) {
+        showMessage('Please configure Google Sheets URL first', 'error');
+        return null;
+    }
 
-            try {
-                const response = await fetch(CONFIG.sheetUrl, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ action, ...data })
-                });
+    try {
+        // Change: Remove 'no-cors'. Use a standard POST request.
+        const response = await fetch(CONFIG.sheetUrl, {
+            method: 'POST',
+            body: JSON.stringify({ action, ...data })
+        });
 
-                // Note: Due to no-cors, we can't read the response
-                // For now, we'll use localStorage as fallback
-                return await handleWithLocalStorage(action, data);
-            } catch (error) {
-                console.error('Sheet API Error:', error);
-                return await handleWithLocalStorage(action, data);
-            }
-        }
+        // Apps Script returns a JSON string
+        const result = await response.json();
+        return result;
+    } catch (error) {
+        console.error('Sheet API Error:', error);
+        // This will now only trigger if the network actually fails
+        return await handleWithLocalStorage(action, data);
+    }
+}
 
         // LocalStorage fallback for development
         function handleWithLocalStorage(action, data) {
