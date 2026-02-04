@@ -1113,12 +1113,15 @@
                 return;
             }
 
-            container.innerHTML = upcomingGames.map(game => {
-                // Generate lines if not set
-                if (!game.lines || game.lines.length === 0) {
-                    game.lines = generateLines(game);
-                }
+            // Filter to only show games with lines set by admin
+            const gamesWithLines = upcomingGames.filter(g => g.lines && g.lines.length > 0);
 
+            if (gamesWithLines.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #94a3b8;">No games with lines available yet. Admin is setting lines! 🏀</p>';
+                return;
+            }
+
+            container.innerHTML = gamesWithLines.map(game => {
                 return `
                     <div class="game-card">
                         <div class="game-header">${game.name} - ${game.date}</div>
@@ -1454,29 +1457,40 @@
             if (!gameId) return;
             
             const game = allGames.find(g => g.id === gameId);
-            if (!game || !game.lines) return;
+            if (!game) return;
+            
+            // Initialize lines if they don't exist
+            if (!game.lines || game.lines.length === 0) {
+                game.lines = allPlayers.map(player => ({
+                    playerId: player.id,
+                    statType: 'Points',
+                    line: 0.5
+                }));
+            }
             
             const container = document.getElementById('adjustFormContainer');
             container.innerHTML = `
-                <h4 style="margin: 25px 0 15px; color: #fb923c; font-family: 'Bebas Neue', sans-serif; font-size: 1.3em;">Adjust Lines</h4>
-                ${game.lines.map((line, idx) => {
-                    const player = allPlayers.find(p => p.id === line.playerId);
+                <h4 style="margin: 25px 0 15px; color: #fb923c; font-family: 'Bebas Neue', sans-serif; font-size: 1.3em;">Set Lines for All Players</h4>
+                ${allPlayers.map((player, playerIdx) => {
+                    const existingLine = game.lines.find(l => l.playerId === player.id);
+                    const lineValue = existingLine ? existingLine.line : 0.5;
                     return `
                         <div style="background: rgba(51, 65, 85, 0.4); padding: 12px; border-radius: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(59, 130, 246, 0.2);">
-                            <span style="color: white;">${player?.name} - ${line.statType}</span>
-                            <input type="number" id="line-${idx}" value="${line.line}" step="0.5" style="width: 100px; padding: 8px; background: rgba(30, 64, 175, 0.2); border: 2px solid rgba(59, 130, 246, 0.3); color: white; border-radius: 8px;">
+                            <span style="color: white;">${player.name} - Points</span>
+                            <input type="number" id="line-${player.id}" value="${lineValue}" step="0.5" style="width: 100px; padding: 8px; background: rgba(30, 64, 175, 0.2); border: 2px solid rgba(59, 130, 246, 0.3); color: white; border-radius: 8px;">
                         </div>
                     `;
                 }).join('')}
-                <button class="btn" onclick="submitAdjustedLines(${gameId})" style="margin-top: 15px;">Save Lines</button>
+                <button class="btn" onclick="submitAdjustedLines(${gameId})" style="margin-top: 15px;">Save All Lines</button>
             `;
         }
 
         async function submitAdjustedLines(gameId) {
             const game = allGames.find(g => g.id === gameId);
-            const newLines = game.lines.map((line, idx) => ({
-                ...line,
-                line: parseFloat(document.getElementById(`line-${idx}`).value)
+            const newLines = allPlayers.map(player => ({
+                playerId: player.id,
+                statType: 'Points',
+                line: parseFloat(document.getElementById(`line-${player.id}`).value) || 0.5
             }));
             
             await callSheetAPI('updateLines', { gameId, lines: newLines });
