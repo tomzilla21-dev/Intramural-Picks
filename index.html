@@ -300,16 +300,42 @@
         .parlay-slip {
             position: fixed;
             right: 20px;
-            top: 20px;
+            bottom: 20px;
             width: 340px;
             background: rgba(15, 23, 42, 0.98);
             border-radius: 15px;
             box-shadow: 0 10px 40px rgba(0,0,0,0.5);
             padding: 25px;
-            max-height: 85vh;
+            max-height: 50vh;
             overflow-y: auto;
             border: 2px solid rgba(59, 130, 246, 0.3);
             backdrop-filter: blur(10px);
+            z-index: 100;
+        }
+
+        .parlay-slip.preview-only {
+            max-height: 30vh;
+        }
+
+        .review-button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #1e40af 0%, #ea580c 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Bebas Neue', sans-serif;
+            letter-spacing: 1px;
+            margin-top: 12px;
+        }
+
+        .review-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.5);
         }
 
         .parlay-header {
@@ -864,10 +890,14 @@
     <div class="parlay-slip" id="parlaySlip" style="display: none;">
         <div class="parlay-header">Parlay Slip 🎯</div>
         <div id="parlayPicks"></div>
-        <input type="number" class="wager-input" id="wagerAmount" placeholder="Wager amount" min="1">
-        <div class="parlay-odds" id="parlayOdds">Odds: --</div>
-        <div class="parlay-odds" id="potentialWin">To Win: $0</div>
-        <button class="submit-parlay" onclick="submitParlay()">Place Parlay</button>
+        <button class="review-button" id="reviewButton" onclick="openReview()" style="display: none;">Review & Place Wager</button>
+        <div id="wagerSection" style="display: none;">
+            <input type="number" class="wager-input" id="wagerAmount" placeholder="Wager amount" min="1">
+            <div class="parlay-odds" id="parlayOdds">Odds: --</div>
+            <div class="parlay-odds" id="potentialWin">To Win: $0</div>
+            <button class="submit-parlay" onclick="submitParlay()">Place Parlay</button>
+            <button class="btn btn-danger" onclick="closeReview()" style="width: 100%; margin-top: 8px;">Cancel</button>
+        </div>
     </div>
 
     <script>
@@ -1228,6 +1258,8 @@
         function updateParlaySlip() {
             const slip = document.getElementById('parlaySlip');
             const picksDiv = document.getElementById('parlayPicks');
+            const reviewButton = document.getElementById('reviewButton');
+            const wagerSection = document.getElementById('wagerSection');
             
             if (selectedPicks.length === 0) {
                 slip.style.display = 'none';
@@ -1235,6 +1267,9 @@
             }
             
             slip.style.display = 'block';
+            slip.classList.add('preview-only');
+            reviewButton.style.display = selectedPicks.length >= 2 ? 'block' : 'none';
+            wagerSection.style.display = 'none';
             
             picksDiv.innerHTML = selectedPicks.map((pick, idx) => `
                 <div class="parlay-item">
@@ -1246,6 +1281,26 @@
             `).join('');
             
             updateOdds();
+        }
+
+        function openReview() {
+            const slip = document.getElementById('parlaySlip');
+            const reviewButton = document.getElementById('reviewButton');
+            const wagerSection = document.getElementById('wagerSection');
+            slip.classList.remove('preview-only');
+            reviewButton.style.display = 'none';
+            wagerSection.style.display = 'block';
+            document.getElementById('wagerAmount').focus();
+        }
+
+        function closeReview() {
+            const slip = document.getElementById('parlaySlip');
+            const reviewButton = document.getElementById('reviewButton');
+            const wagerSection = document.getElementById('wagerSection');
+            slip.classList.add('preview-only');
+            reviewButton.style.display = 'block';
+            wagerSection.style.display = 'none';
+            document.getElementById('wagerAmount').value = '';
         }
 
         function removePick(index) {
