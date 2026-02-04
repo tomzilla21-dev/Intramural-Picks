@@ -902,10 +902,12 @@
 
     <script>
         // Configuration
-        let CONFIG = {
-            sheetUrl: localStorage.getItem('sheetUrl') || '',
-            adminPassword: localStorage.getItem('adminPassword') || 'admin123'
-        };
+        // Configuration
+    let CONFIG = {
+        // PASTE YOUR ACTUAL WEB APP URL BETWEEN THE QUOTES BELOW
+        sheetUrl: 'https://script.google.com/macros/s/AKfycbz_s1osK3PHAtSxGBqpMT_hNypFN6cWkffyGXRL5biiahv3RO0jGeV73E47WsHYk1cw_w/exec',
+        adminPassword: localStorage.getItem('adminPassword') || 'admin123'
+};
 
         // State
         let currentUser = localStorage.getItem('currentUser') || '';
@@ -956,25 +958,24 @@
             showSection('picks');
         }
 
-        async function callSheetAPI(action, data = {}) {
+       async function callSheetAPI(action, data = {}) {
     if (!CONFIG.sheetUrl) {
         showMessage('Please configure Google Sheets URL first', 'error');
         return null;
     }
 
     try {
-        // Change: Remove 'no-cors'. Use a standard POST request.
         const response = await fetch(CONFIG.sheetUrl, {
             method: 'POST',
+            // REMOVED 'no-cors' to allow the phone to read the data
             body: JSON.stringify({ action, ...data })
         });
 
-        // Apps Script returns a JSON string
+        // This line allows your phone to actually download the games/leaderboard
         const result = await response.json();
         return result;
     } catch (error) {
         console.error('Sheet API Error:', error);
-        // This will now only trigger if the network actually fails
         return await handleWithLocalStorage(action, data);
     }
 }
