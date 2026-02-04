@@ -1166,6 +1166,7 @@
 
         function roundToHalf(num) {
             // Round to nearest 0.5 (like real sportsbooks)
+            // Math.round(num * 2) / 2 gives us increments of 0.5
             return Math.round(num * 2) / 2;
         }
 
@@ -1196,8 +1197,8 @@
             
             const weightedAvg = weightSum > 0 ? weightedSum / weightSum : 0.5;
             
-            // If they have no points in any game, return 0.5
-            return weightedAvg > 0 ? weightedAvg : 0.5;
+            // Round to nearest 0.5 before returning
+            return roundToHalf(weightedAvg);
         }
 
         function selectPick(gameId, playerId, statType, line, pick, playerName, gameName) {
